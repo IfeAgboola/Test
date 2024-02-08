@@ -1,10 +1,36 @@
-stages{
-      stage('deploy to S3'){
-          steps{
-              sh 'aws s3 cp ./index.html s3://jenkinsbife'
-              sh 'aws s3api put-object-acl --bucket jenkinsbife --key index.html --acl public-read'
-             
-              
-          }
-      }
-  }
+pipeline{
+    agent any 
+    environment {
+    AWS_DEFAULT_REGION = "us-east-1"
+    THE_BUTLER_SAYS_SO = credentials('Jenkins and AWS')
+    }
+    stages {
+        stage ('Build'){
+            steps {
+                echo "Building stage"
+            }
+        }
+        stage ('Test'){
+            steps {
+                echo "Testing stage"
+
+            }
+        }
+        stage ('Deploy to S3'){ 
+            steps{ 
+                echo "Deploying" 
+                sh ' aws s3 cp ./index.html s3://jenkinsbife '
+            } 
+        }
+
+    }
+
+    post{
+        success {
+            echo "success"
+        }
+        failure {
+            echo "failure"
+        }
+    }
+}
